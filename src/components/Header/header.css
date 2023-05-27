@@ -1,0 +1,31 @@
+.header {
+  padding: 1rem 1rem 0.5rem 1rem;
+
+  max-height: 200px;
+  border-bottom: 5px solid #242731;
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header span {
+  margin-left: 1rem;
+  font-family: "poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 18px;
+  /* identical to box height, or 100% */
+
+  /* white */
+
+  color: #ffffff;
+  border-bottom: 2px solid blue;
+  padding-bottom: 0.45rem;
+}
+.header span ::after {
+  content: "";
+}
