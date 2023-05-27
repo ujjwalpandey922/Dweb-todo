@@ -1,7 +1,7 @@
 import "./sidebar.css";
 import close from "../../assets/closing icon.png";
 import toggle from "../../assets/toggle.png";
-import language from "../../assets/language.png";
+import language from "../../assets/Language.png";
 import avatar from "../../assets/avatar.jpeg";
 import home from "../../assets/Category-home.png";
 import sec1 from "../../assets/sec1.png";
