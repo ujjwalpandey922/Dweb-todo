@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-// import todoReducer from "../todoSlice/TodoSlice";
 import ListSlice from "../listSlice/ListSlice";
+const initialData=[]
 export const store = configureStore({
   reducer: {
-    // todos: todoReducer,
     lists: ListSlice,
   },
+  preloadedState: initialData,
 });

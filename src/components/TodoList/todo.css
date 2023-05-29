@@ -194,3 +194,16 @@
     opacity: 1;
   }
 }
+/* =================IMAGE POP UP=================== */
+.handleAddList {
+  transition: transform 0.5s;
+}
+.handleAddList:hover {
+  transform: scale(1.2);
+}
+
+@media (max-width: 700px) {
+  .todo {
+    max-width: 100%;
+  }
+}

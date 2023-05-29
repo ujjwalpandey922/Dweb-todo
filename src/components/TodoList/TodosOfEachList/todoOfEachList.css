@@ -1,0 +1,6 @@
+.handleRemoveList{
+  transition: transform .4s;
+}
+.handleRemoveList:hover {
+  transform: scale(1.2); 
+}

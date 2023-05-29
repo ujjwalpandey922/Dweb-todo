@@ -1,14 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./edittodo.css";
 import { BiArrowBack } from "react-icons/bi";
 import { editTodo } from "../../../listSlice/ListSlice";
 import { useDispatch } from "react-redux";
-import {  toast } from "react-toastify";
+import {
+  useContractWrite,
+  useWaitForTransaction,
+  usePrepareContractWrite,
+} from "wagmi";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import addressData from "../../../contractConfig.json";
 const EditTodo = ({ selectedTodos, setToggleEdit }) => {
   const [title, setTitle] = useState(selectedTodos.title);
   const [description, setdescription] = useState(selectedTodos.description);
   const dispatch = useDispatch();
+
+  const { config: configUpdateTodo } = usePrepareContractWrite({
+    address: addressData.address,
+    abi: addressData.abi,
+    functionName: "updateTodo",
+    args: [selectedTodos.id, selectedTodos.singleListId, title, description],
+  });
+  const { data: updateTodoData, write: updateTodoWrite } =
+    useContractWrite(configUpdateTodo);
+  const { isLoading: updateTodoIsLoading, isSuccess: updateTodoIsSuccess } =
+    useWaitForTransaction({
+      hash: updateTodoData?.hash,
+    });
+
   const handleEditSave = () => {
     if (!checkTodos) {
       toast.warn("👎 Enter Todo Info!", {
@@ -23,24 +43,41 @@ const EditTodo = ({ selectedTodos, setToggleEdit }) => {
       });
       return;
     }
-    let editedData = {
-      ...selectedTodos,
-      title: title,
-      description: description,
-    };
-    dispatch(editTodo({ ...editedData }));
-    setToggleEdit(false);
-    toast.success("👌 Todo Updated!!!!!", {
-      position: "top-left",
-      autoClose: 3000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
+    updateTodoWrite?.();
   };
+  useEffect(() => {
+    if (updateTodoIsLoading && !updateTodoIsSuccess) {
+      toast.loading("Wait.....", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (!updateTodoIsLoading && updateTodoIsSuccess) {
+      let editedData = {
+        ...selectedTodos,
+        title: title,
+        description: description,
+      };
+      toast.dismiss();
+      dispatch(editTodo({ ...editedData }));
+      setToggleEdit(false);
+      toast.success("👌 Todo Updated!!!!!", {
+        position: "top-left",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }, [updateTodoIsLoading, updateTodoIsSuccess]);
   let checkTodos = Boolean(title) && Boolean(description);
   return (
     <div className="edit-todo">

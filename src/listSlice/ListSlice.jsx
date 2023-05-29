@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = [];
 const listSlice = createSlice({
   name: "lists",
-  initialState: [],
+  initialState,
   reducers: {
     addList: (state, action) => {
       const newList = {
-        id: new Date().getTime().toLocaleString(),
-        listTitle: action.payload.listTitle,
+        id: action.payload.listId,
         todos: [],
       };
       state.push(newList);
@@ -20,7 +20,7 @@ const listSlice = createSlice({
             todos: [
               ...list.todos,
               {
-                id: Date.now(),
+                id: action.payload.todoId,
                 title: action.payload.title,
                 description: action.payload.description,
               },
@@ -51,8 +51,29 @@ const listSlice = createSlice({
         return list;
       });
     },
+    removeList: (state, action) => {
+      const remainingList = state.filter(
+        (singleList) => singleList.id !== action.payload.listId
+      );
+      return remainingList;
+    },
+    removeTodo: (state, action) => {
+      return state.map((list) => {
+        if (list.id === action.payload.listId) {
+          const remainingTodos = list.todos.filter(
+            (singleTodo) => singleTodo.id !== action.payload.todoId
+          );
+          return {
+            ...list,
+            todos: [...remainingTodos],
+          };
+        }
+        return list;
+      });
+    },
   },
 });
 
-export const { addList, addTodo, editTodo } = listSlice.actions;
+export const { addList, addTodo, editTodo, removeList, removeTodo } =
+  listSlice.actions;
 export default listSlice.reducer;
